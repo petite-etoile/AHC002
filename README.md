@@ -15,11 +15,11 @@
 ## 提出履歴
 |内容|ファイル名|得点|提出ページ|
 |:--:|:--:|---:|:--:|
-|空のファイル|empty.cpp|4861|[提出リンク](https://atcoder.jp/contests/ahc002/submissions/22062564)|
-|貪欲()|ChokudaiSearch.cpp|180042|[提出リンク](https://atcoder.jp/contests/ahc002/submissions/22064052)|
-|単純なChokudaiサーチ|ChokudaiSearch.cpp|3282136|[提出リンク](https://atcoder.jp/contests/ahc002/submissions/22064925)|
-|履歴を持ってfor文の無駄な深さの探索を削除|ChokudaiSearch.cpp|3282136|[提出リンク](https://atcoder.jp/contests/ahc002/submissions/22067923)|
-|評価関数に中心からのチェビシェフ距離を追加(重み10)|ChokudaiSearch.cpp|4924141|[提出リンク](https://atcoder.jp/contests/ahc002/submissions/22083857)|
+|空のファイル|[empty.cpp](https://github.com/petite-etoile/AHC002/blob/d4095f541dd86ecf3475be49446b9de33b36ba2f/empty.txt)|4861|[提出リンク](https://atcoder.jp/contests/ahc002/submissions/22062564)|
+|貪欲()|[ChokudaiSearch.cpp](https://github.com/petite-etoile/AHC002/blob/d4095f541dd86ecf3475be49446b9de33b36ba2f/ChokudaiSearch.cpp)|180042|[提出リンク](https://atcoder.jp/contests/ahc002/submissions/22064052)|
+|単純なChokudaiサーチ|[ChokudaiSearch.cpp](https://github.com/petite-etoile/AHC002/blob/d4095f541dd86ecf3475be49446b9de33b36ba2f/ChokudaiSearch.cpp)|3282136|[提出リンク](https://atcoder.jp/contests/ahc002/submissions/22064925)|
+|履歴を持ってfor文の無駄な深さの探索を削除|[ChokudaiSearch.cpp](https://github.com/petite-etoile/AHC002/blob/d4095f541dd86ecf3475be49446b9de33b36ba2f/ChokudaiSearch.cpp)|3282136|[提出リンク](https://atcoder.jp/contests/ahc002/submissions/22067923)|
+|評価関数に中心からのチェビシェフ距離を追加(重み10)|[ChokudaiSearch.cpp](https://github.com/petite-etoile/AHC002/blob/d4095f541dd86ecf3475be49446b9de33b36ba2f/ChokudaiSearch.cpp)|4924141|[提出リンク](https://atcoder.jp/contests/ahc002/submissions/22083857)|
 
 
 ※masterブランチにファイルがあります
