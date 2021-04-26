@@ -159,7 +159,6 @@ void chokudai_search(vector<int> const& S, vector<vector<int>> const& T, vector<
                 continue;
             }else{
                 int new_score = before_score + P[now_place.first][now_place.second];
-                // assert(new_score == calc_score_all(board, B));
                 visited.set(T[now_place.first][now_place.second]);
                 move[depth] = i;
                 priq_vec[depth].insert(State(new_score, visited, move, now_place));
@@ -180,40 +179,6 @@ void chokudai_search(vector<int> const& S, vector<vector<int>> const& T, vector<
         move = (*--priq_vec[depth].end()).move;
     }
 
-    // int cnt=0;
-    // while(true){
-    //     cnt++;
-    //     clock_t now = clock();
-        
-    //     //各深さについて、今まで探索したやつで一番いいやつを使って次を探索
-    //     for(int depth=1; depth<N*N; depth++){
-    //         if(now >= end_time - CLOCKS_PER_SEC && clock() >= end_time){
-    //             ans = (*priq_vec[N*N-1].begin()).board;
-    //             ans_score = (*priq_vec[N*N-1].begin()).score;
-    //             return;
-    //         }
-    //         if(priq_vec[depth-1].empty()){ continue;} //priqが空
-
-
-    //         State before_state = *--priq_vec[depth-1].end(); priq_vec[depth-1].erase(--priq_vec[depth-1].end()); //１個前の局面の一番いいやつ
-    //         int before_score = before_state.score;
-    //         vector<vector<int>> board = before_state.board;
-
-    //         h = depth/N; w = depth%N;
-    //         for(int num = L[h][w]; num <= R[h][w]; num++){
-    //             board[h][w] = num;
-    //             int new_score = before_score + get_added_score(h, w, board, B);
-    //             // assert(new_score == calc_score_all(board, B));
-    //             priq_vec[depth].insert(State(new_score, board));
-    //         }
-
-    //         if(priq_vec[depth].size() > 200) {
-    //             auto l_iter = priq_vec[depth].begin(); auto r_iter = l_iter; 
-    //             for(int _=0; _ < priq_vec[depth].size() - 200; _++) r_iter++;
-    //             priq_vec[depth].erase(l_iter, r_iter);
-    //         }
-    //     }
-    // }
 
     int score = 0;
     ans = move;
