@@ -11,4 +11,15 @@
 素のスコアを評価関数に用いると微妙
 最後、袋小路になって止まってしまうことを考えると、渦巻き状になるとうれしい -> 中心からのチェビシェフ距離を評価関数に追加する
 
+
+## 提出履歴
+|内容|ファイル名|得点|提出ページ|
+|----|----|----|----|
+|空のファイル|empty.cpp|4861|https://atcoder.jp/contests/ahc002/submissions/22062564|
+|貪欲()|ChokudaiSearch.cpp|180042|https://atcoder.jp/contests/ahc002/submissions/22064052|
+|単純なChokudaiサーチ|ChokudaiSearch.cpp|3282136|https://atcoder.jp/contests/ahc002/submissions/22064925|
+|履歴を持ってfor文の無駄な深さの探索を削除|ChokudaiSearch.cpp|3282136|https://atcoder.jp/contests/ahc002/submissions/22067923|
+|評価関数に中心からのチェビシェフ距離を追加(重み10)|ChokudaiSearch.cpp|4924141|https://atcoder.jp/contests/ahc002/submissions/22083857|
+
+
 ※masterブランチにファイルがあります
