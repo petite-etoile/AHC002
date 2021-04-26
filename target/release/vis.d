@@ -1,0 +1,1 @@
+/Users/petite/Documents/Python/atcoder/MM/AHC/AHC002/target/release/vis: /Users/petite/Documents/Python/atcoder/MM/AHC/AHC002/src/bin/vis.rs /Users/petite/Documents/Python/atcoder/MM/AHC/AHC002/src/lib.rs
