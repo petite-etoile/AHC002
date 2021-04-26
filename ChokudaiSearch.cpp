@@ -124,6 +124,16 @@ bool is_outside(pair<int,int> const& HW){
     return (HW.first<0 or HW.first>=N or HW.second<0 or HW.second>=N);
 }
 
+
+void save_ans(vector<multiset<State>>const& priq_vec, vector<int>& ans, int& ans_score){
+    for(int depth = N*N-1; depth>=0; depth--){
+        if(priq_vec[depth].empty()) continue;
+        ans = (*--priq_vec[depth].end()).move;
+        ans_score = (*--priq_vec[depth].end()).score;
+    }
+}
+
+
 void cout_move(vector<int> const& move){
     for(auto a:move){
         if(a==0) cout<<"D";
@@ -134,6 +144,8 @@ void cout_move(vector<int> const& move){
     cout << endl;
 }
 
+
+
 void chokudai_search(vector<int> const& S, vector<vector<int>> const& T, vector<vector<int>> const& P, int& ans_score, vector<int>& ans, clock_t end_time){
 
     vector<multiset<State>> priq_vec(N*N); //各深さごとの(スコア, 局面)を昇順でもつ 状態が大きくなりすぎてMLEするので定期的に削除できるようにmultiset
@@ -141,7 +153,7 @@ void chokudai_search(vector<int> const& S, vector<vector<int>> const& T, vector<
     //まず探索
     int h,w;
     vector<int> move; move.reserve(N*N);
-    int before_score = 0;
+    int before_score = P[S[0]][S[1]];
     pair<int,int> before_place = mp(S[0], S[1]);
     bitset<N*N> visited;
     visited.set(T[S[0]][S[1]]);
@@ -167,7 +179,6 @@ void chokudai_search(vector<int> const& S, vector<vector<int>> const& T, vector<
             }
         }
 
-        // debug(depth)
         if(priq_vec[depth].empty()) {
             move.pop_back();
             break;
@@ -179,10 +190,58 @@ void chokudai_search(vector<int> const& S, vector<vector<int>> const& T, vector<
         move = (*--priq_vec[depth].end()).move;
     }
 
+    while(true){
+        clock_t now = clock();
+        
+        //各深さについて、今まで探索したやつで一番いいやつを使って次を探索
+        for(int depth=1; depth<N*N; depth++){
+            if(now >= end_time - CLOCKS_PER_SEC && clock() >= end_time){
+                return;
+            }
+            if(priq_vec[depth-1].empty()){ continue;} //priqが空
 
-    int score = 0;
-    ans = move;
-    ans_score = score;
+
+            State before_state = *--priq_vec[depth-1].end(); priq_vec[depth-1].erase(--priq_vec[depth-1].end()); //１個前の局面の一番いいやつ
+            int& before_score = before_state.score;
+            vector<int>& move = before_state.move;
+            pair<int,int>& before_place = before_state.place;
+            bitset<N*N>& visited = before_state.visited; 
+
+            move.push_back(0);
+            REP(i,4){
+                pair<int,int> now_place = before_place;
+                if(i==0) now_place.first += 1;
+                else if(i==1) now_place.first -= 1;
+                else if(i==2) now_place.second += 1;
+                else now_place.second -= 1;
+
+                if(is_outside(now_place)) continue;
+                if(visited.test(T[now_place.first][now_place.second])){
+                    continue;
+                }else{ //validな移動なら、スコアとか状態とかを更新し、priqに入れる. ついでにスコアが更新されてたら更新しておく
+                    int new_score = before_score + P[now_place.first][now_place.second];
+                    visited.set(T[now_place.first][now_place.second]);
+                    move[depth] = i;
+                    priq_vec[depth].insert(State(new_score, visited, move, now_place));
+
+                    visited.reset(T[now_place.first][now_place.second]);
+                    if(new_score > ans_score){
+                        ans = move;
+                        ans_score = new_score;
+                    }
+                }
+            }
+
+            //MLE対策
+            if(priq_vec[depth].size() > 200) {
+                auto l_iter = priq_vec[depth].begin(); auto r_iter = l_iter; 
+                for(int _=0; _ < priq_vec[depth].size() - 200; _++) r_iter++;
+                priq_vec[depth].erase(l_iter, r_iter);
+            }
+        }
+    }
+
+    exit(1);
 
 }
 
@@ -191,7 +250,7 @@ void chokudai_search(vector<int> const& S, vector<vector<int>> const& T, vector<
 int main(){
     cin.tie(nullptr);
     ios::sync_with_stdio(false);
-    const double sec = 1.5;    
+    const double sec = 1.7;    
     clock_t start_time = clock();
     clock_t end_time   = start_time + sec * CLOCKS_PER_SEC;
 
@@ -204,7 +263,7 @@ int main(){
     int score = 0; vector<int> ans;
     chokudai_search(S,T,P,score,ans,end_time); 
 
-
+    debug(score)
     cout_move(ans);
 
 
