@@ -95,7 +95,7 @@ const int N = 50;
 class State{
     public:
     int score;
-    vector<int> move;
+    vector<char> move;
     bitset<N*N> visited;
     pair<int,int> place;
     State(){
@@ -103,7 +103,7 @@ class State{
         
     }
 
-    State(int score_, bitset<N*N> const& visited_, vector<int> const& move_, pair<int,int> const& place_){
+    State(int score_, bitset<N*N> const& visited_, vector<char> const& move_, pair<int,int> const& place_){
         score = score_;
         visited = visited_;
         move = move_;
@@ -125,7 +125,7 @@ bool is_outside(pair<int,int> const& HW){
 }
 
 
-void save_ans(vector<multiset<State>>const& priq_vec, vector<int>& ans, int& ans_score){
+void save_ans(vector<multiset<State>>const& priq_vec, vector<char>& ans, int& ans_score){
     for(int depth = N*N-1; depth>=0; depth--){
         if(priq_vec[depth].empty()) continue;
         ans = (*--priq_vec[depth].end()).move;
@@ -134,7 +134,7 @@ void save_ans(vector<multiset<State>>const& priq_vec, vector<int>& ans, int& ans
 }
 
 
-void cout_move(vector<int> const& move){
+void cout_move(vector<char> const& move){
     for(auto a:move){
         if(a==0) cout<<"D";
         else if(a==1) cout<<"U";
@@ -146,17 +146,17 @@ void cout_move(vector<int> const& move){
 
 
 
-void chokudai_search(vector<int> const& S, vector<vector<int>> const& T, vector<vector<int>> const& P, int& ans_score, vector<int>& ans, clock_t end_time){
+void chokudai_search(vector<int> const& S, vector<vector<int>> const& T, vector<vector<int>> const& P, int& ans_score, vector<char>& ans, clock_t end_time){
 
     vector<multiset<State>> priq_vec(N*N); //各深さごとの(スコア, 局面)を昇順でもつ 状態が大きくなりすぎてMLEするので定期的に削除できるようにmultiset
 
     //まず探索
-    int h,w;
-    vector<int> move; move.reserve(N*N);
-    int before_score = P[S[0]][S[1]];
-    pair<int,int> before_place = mp(S[0], S[1]);
-    bitset<N*N> visited;
-    visited.set(T[S[0]][S[1]]);
+    vector<char> move; move.reserve(N*N); //動き
+    int before_score = P[S[0]][S[1]]; //スコア
+    pair<int,int> before_place = mp(S[0], S[1]); //現在地
+    bitset<N*N> visited; visited.set(T[S[0]][S[1]]); //踏んだタイル
+    
+    int next_upper = 0; //どの深さまでキューが入ってるか
     for(int depth=0; depth<N*N; depth++){
         move.push_back(0);
         REP(i,4){
@@ -176,6 +176,7 @@ void chokudai_search(vector<int> const& S, vector<vector<int>> const& T, vector<
                 priq_vec[depth].insert(State(new_score, visited, move, now_place));
 
                 visited.reset(T[now_place.first][now_place.second]);
+                next_upper = depth+1;
             }
         }
 
@@ -192,20 +193,24 @@ void chokudai_search(vector<int> const& S, vector<vector<int>> const& T, vector<
 
     while(true){
         clock_t now = clock();
-        
-        //各深さについて、今まで探索したやつで一番いいやつを使って次を探索
-        for(int depth=1; depth<N*N; depth++){
-            if(now >= end_time - CLOCKS_PER_SEC && clock() >= end_time){
-                return;
-            }
-            if(priq_vec[depth-1].empty()){ continue;} //priqが空
+        int upper = next_upper;
+        next_upper = 0;
 
+        if(now >= end_time){
+            return;
+        }
+
+        //各深さについて、今まで探索したやつで一番いいやつを使って次を探索
+        for(int depth=1; depth<=min(upper,N*N-1); depth++){
+            if(priq_vec[depth-1].empty()){ continue;} //priqが空
 
             State before_state = *--priq_vec[depth-1].end(); priq_vec[depth-1].erase(--priq_vec[depth-1].end()); //１個前の局面の一番いいやつ
             int& before_score = before_state.score;
-            vector<int>& move = before_state.move;
+            vector<char>& move = before_state.move;
             pair<int,int>& before_place = before_state.place;
             bitset<N*N>& visited = before_state.visited; 
+            
+            if(not priq_vec[depth-1].empty()) next_upper=depth+1;
 
             move.push_back(0);
             REP(i,4){
@@ -229,14 +234,8 @@ void chokudai_search(vector<int> const& S, vector<vector<int>> const& T, vector<
                         ans = move;
                         ans_score = new_score;
                     }
+                    upper++;
                 }
-            }
-
-            //MLE対策
-            if(priq_vec[depth].size() > 200) {
-                auto l_iter = priq_vec[depth].begin(); auto r_iter = l_iter; 
-                for(int _=0; _ < priq_vec[depth].size() - 200; _++) r_iter++;
-                priq_vec[depth].erase(l_iter, r_iter);
             }
         }
     }
@@ -260,7 +259,7 @@ int main(){
     REP(i,N) REP(j,N) cin >> T[i][j];
     REP(i,N) REP(j,N) cin >> P[i][j];
 
-    int score = 0; vector<int> ans;
+    int score = 0; vector<char> ans;
     chokudai_search(S,T,P,score,ans,end_time); 
 
     debug(score)
