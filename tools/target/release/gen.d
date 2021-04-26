@@ -1,0 +1,1 @@
+/Users/petite/Documents/Python/atcoder/MM/AHC/AHC002/target/release/gen: /Users/petite/Documents/Python/atcoder/MM/AHC/AHC002/src/bin/gen.rs /Users/petite/Documents/Python/atcoder/MM/AHC/AHC002/src/lib.rs
