@@ -124,7 +124,6 @@ bool is_outside(pair<int,int> const& HW){
     return (HW.first<0 or HW.first>=N or HW.second<0 or HW.second>=N);
 }
 
-
 void save_ans(vector<multiset<State>>const& priq_vec, vector<char>& ans, int& ans_score){
     for(int depth = N*N-1; depth>=0; depth--){
         if(priq_vec[depth].empty()) continue;
@@ -145,6 +144,10 @@ void cout_move(vector<char> const& move){
 }
 
 
+int add_score(vector<vector<int>> const& P, pair<int,int> place){
+    const int coef = 10;
+    return P[place.first][place.second] + coef * ( N - min(place.first, N-1-place.first) - min(place.second, N-1-place.second) );
+}
 
 void chokudai_search(vector<int> const& S, vector<vector<int>> const& T, vector<vector<int>> const& P, int& ans_score, vector<char>& ans, clock_t end_time){
 
@@ -170,7 +173,7 @@ void chokudai_search(vector<int> const& S, vector<vector<int>> const& T, vector<
             if(visited.test(T[now_place.first][now_place.second])){
                 continue;
             }else{
-                int new_score = before_score + P[now_place.first][now_place.second];
+                int new_score = before_score + add_score(P, now_place);
                 visited.set(T[now_place.first][now_place.second]);
                 move[depth] = i;
                 priq_vec[depth].insert(State(new_score, visited, move, now_place));
@@ -191,6 +194,7 @@ void chokudai_search(vector<int> const& S, vector<vector<int>> const& T, vector<
         move = (*--priq_vec[depth].end()).move;
     }
 
+    int cnt=0;
     while(true){
         clock_t now = clock();
         int upper = next_upper;
@@ -201,8 +205,12 @@ void chokudai_search(vector<int> const& S, vector<vector<int>> const& T, vector<
         }
 
         //各深さについて、今まで探索したやつで一番いいやつを使って次を探索
+        int flag1=0, flag2=0;
         for(int depth=1; depth<=min(upper,N*N-1); depth++){
             if(priq_vec[depth-1].empty()){ continue;} //priqが空
+            if(depth < N and flag2){
+                flag2=0; flag1=1;
+            }else flag2=1;
 
             State before_state = *--priq_vec[depth-1].end(); priq_vec[depth-1].erase(--priq_vec[depth-1].end()); //１個前の局面の一番いいやつ
             int& before_score = before_state.score;
@@ -224,7 +232,7 @@ void chokudai_search(vector<int> const& S, vector<vector<int>> const& T, vector<
                 if(visited.test(T[now_place.first][now_place.second])){
                     continue;
                 }else{ //validな移動なら、スコアとか状態とかを更新し、priqに入れる. ついでにスコアが更新されてたら更新しておく
-                    int new_score = before_score + P[now_place.first][now_place.second];
+                    int new_score = before_score + add_score(P, now_place);
                     visited.set(T[now_place.first][now_place.second]);
                     move[depth] = i;
                     priq_vec[depth].insert(State(new_score, visited, move, now_place));
@@ -249,7 +257,7 @@ void chokudai_search(vector<int> const& S, vector<vector<int>> const& T, vector<
 int main(){
     cin.tie(nullptr);
     ios::sync_with_stdio(false);
-    const double sec = 1.7;    
+    const double sec = 1.6;    
     clock_t start_time = clock();
     clock_t end_time   = start_time + sec * CLOCKS_PER_SEC;
 
